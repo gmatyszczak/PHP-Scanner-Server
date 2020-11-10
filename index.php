@@ -32,6 +32,7 @@ $SOURCE=Get_Values('source');
 $SOURCE=(strlen($SOURCE)==0?'Inactive':$SOURCE);
 $RAW=Get_Values('raw');
 $RAW=($RAW=='pnm'?'pnm':'tiff');// security check
+$FORCE_FILE_NAME=Get_Values('file_name');
 
 $notes='Please read the <a href="index.php?page=About">release notes</a> for more information.';
 $user=posix_getpwuid(posix_geteuid());
@@ -1323,8 +1324,12 @@ else{
 		for($i=2,$ct=count($files);$i<$ct;$i++){
 			$SCAN=shell("$CANDIR/".$files[$i]);
 
-			# Dated Filename for scan image & preview image
-			$FILENAME=date("M_j_Y~G-i-s",filemtime("$CANDIR/".$files[$i])+$GMT);
+			if (isset($FORCE_FILE_NAME)) {
+				$FILENAME=$FORCE_FILE_NAME;
+			} else {
+				# Dated Filename for scan image & preview image
+				$FILENAME=date("M_j_Y~G-i-s",filemtime("$CANDIR/".$files[$i])+$GMT);
+			}
 			$S_FILENAME="Scan_$SCANNER"."_"."$FILENAME.$FILETYPE";
 			$P_FILENAME="Preview_$SCANNER"."_"."$FILENAME.jpg";
 
